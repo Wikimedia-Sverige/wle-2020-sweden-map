@@ -1,0 +1,50 @@
+html, body, div, span, textarea, button, input, table, tr, td {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13pt;
+}
+
+#map {
+    height: 100%;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-color: white;
+    vertical-align: top;
+    display: block;
+}
+
+#tooltip {
+    position: absolute;
+    display: none;
+    z-index: 5000;
+    background-color: #0000FF;
+    color: #FFFFFF;
+    padding: 0.25em 0.75em 0.25em 0.75em;
+    border: solid 2px #FFFFFF;
+    border-radius: 20px/60px;
+    -webkit-box-shadow: 10px 10px 20px #000000;
+    box-shadow: 10px 10px 20px #000000;
+}
+
+#zoomMore {
+    position: absolute;
+    display: block;
+    z-index: 5000;
+    background-color: #0000FF;
+    color: #FFFFFF;
+    padding: 0.25em 0.75em 0.25em 0.75em;
+    border: solid 2px #FFFFFF;
+    border-radius: 20px/60px;
+    -webkit-box-shadow: 10px 10px 20px #000000;
+    box-shadow: 10px 10px 20px #000000;
+    right: 10px;
+
+}
+
+.popup-images {
+    overflow-y:scroll;
+    max-height: 240px;
+
+}

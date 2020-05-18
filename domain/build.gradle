@@ -1,0 +1,14 @@
+/* Template file, do not edit. Use domain-build.gradle */
+
+plugins {
+  id 'io.franzbecker.gradle-lombok' version '3.3.0'
+  id 'java'
+}
+
+dependencies {
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.8.6'
+}
+
+description = 'domain'
+
+apply from: 'domain-build.gradle'

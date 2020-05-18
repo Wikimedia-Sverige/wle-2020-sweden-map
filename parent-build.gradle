@@ -1,0 +1,8 @@
+allprojects  {
+  apply plugin: 'maven'
+
+  group = 'se.wikimedia.wle2020.naturvardsregistret-map'
+  version = '0.0.1-SNAPSHOT'
+
+}
+

@@ -1,0 +1,24 @@
+/* Template file, do not edit. Use client-build.gradle */
+
+plugins {
+  id 'io.franzbecker.gradle-lombok' version '3.3.0'
+  id 'java'
+}
+
+description = 'client'
+
+dependencies {
+  compile project(':' + rootProject.name + '-domain')
+
+  compile group: 'com.google.inject', name: 'guice', version:'4.1.0'
+
+  compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.3.6'
+
+  compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version:'2.8.6'
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.8.6'
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version:'2.6.4'
+
+  compile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.8.0-alpha2'
+}
+
+apply from: 'client-build.gradle'

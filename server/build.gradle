@@ -1,0 +1,60 @@
+/* Template file, do not edit. Use server-build.gradle */
+
+plugins {
+  id 'io.franzbecker.gradle-lombok' version '3.3.0'
+  id 'java'
+}
+
+description = 'server'
+
+dependencies {
+  compile project(':' + rootProject.name + '-domain')
+
+  def withoutServletApi = { exclude group: 'javax.servlet', module: 'servlet-api'}
+
+  // begin template
+  compile group: 'com.google.inject', name: 'guice', version:'4.1.0'
+  compile group: 'com.google.inject.extensions', name: 'guice-servlet', version:'4.1.0'
+  compile group: 'org.gwizard', name: 'gwizard-rest', version:'0.7'
+  compile group: 'org.gwizard', name: 'gwizard-swagger', version:'0.7', withoutServletApi
+  compile group: 'io.dropwizard', name: 'dropwizard-jackson', version:'0.8.1'
+  compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version:'2.1-m03'
+  compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version:'2.10.0'
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.10.0'
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version:'2.10.0'
+
+  compile group: 'log4j', name: 'log4j', version:'1.2.17'
+  compile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.8.0-alpha2'
+  // end template
+
+  // begin prevayler
+  compile group: 'org.prevayler', name: 'prevayler-core', version:'2.6'
+  compile group: 'org.prevayler', name: 'prevayler-factory', version:'2.6'
+  // end prevayler
+
+}
+
+apply plugin: 'application'
+
+mainClassName = "se.wikimedia.service.wle2020.naturvardsregistret.map.NaturvardsregistretMap"
+
+apply plugin: 'docker'
+
+docker {
+  baseImage 'aglover/java8-pier'
+  maintainer 'Kodapan "hej@kodapan.se"'
+}
+
+
+def tagMatcher = group.toString() =~ /^([^.]+(\.[^.]+)+)\.([^.]+)$/
+tagMatcher.find();
+def tagGroup = tagMatcher.group(1);
+def tagName = tagMatcher.group(3);
+
+distDocker {
+  dependsOn('build')
+  tag = "registry.kodapan.se/${tagGroup}/${tagName}"
+  tagVersion = "latest"
+}
+
+apply from: 'server-build.gradle'
