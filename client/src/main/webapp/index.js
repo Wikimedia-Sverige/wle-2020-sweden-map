@@ -290,8 +290,8 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                popup
-                  .once('popupclose', function (){
+                map
+                  .once('popupclose', function (popup){
                     var millisecondsOpened = Date.now() - timestampOpened;
                     trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
                   });
