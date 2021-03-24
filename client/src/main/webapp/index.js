@@ -14,9 +14,9 @@ $(function () {
   var hasPermalinkMapLocation = mappos.center[0] !== 0 && mappos.center[1] !== 0;
   if (mappos.center[0] === 0 && mappos.center[1] === 0 && mappos.zoom === 0) {
     mappos = {zoom: 5, center: [60.128162, 18.643501]};
-    trackUser('no permalink location');
+    trackUser('initialization', 'no permalink location');
   } else {
-    trackUser('used permalink location', mappos);
+    trackUser('initialization', 'permalink location');
   }
   initializeMap();
   L.Permalink.setup(map);
@@ -31,9 +31,9 @@ $(function () {
         );
         if (swedenEnvelope.contains(positionLatLng)) {
           map.setView(positionLatLng, 12);
-          trackUser('located in sweden', positionLatLng);
+          trackUser('initialization', 'geolocation', 'located in sweden');
         } else {
-          trackUser('not located in sweden', positionLatLng);
+          trackUser('initialization', 'geolocation', 'not located in sweden');
         }
       }
       L.marker(positionLatLng, {
@@ -245,7 +245,7 @@ function search() {
                 .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                 .setContent(popupHtml)
                 .openOn(map);
-              trackUser('clicked on search result', searchResult.q);
+              trackUser('user interaction', 'search result clicked', searchResult.q);
             })
             .addTo(searchResultLayer);
           setTooltip(searchResult, polygon);
@@ -262,7 +262,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                trackUser('clicked on search result', searchResult.q);
+                trackUser('user interaction', 'search result clicked', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -289,7 +289,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                trackUser('clicked on search result', searchResult.q);
+                trackUser('user interaction', 'search result clicked', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -312,7 +312,8 @@ function search() {
       });
 
       var millisecondsSpentSearching = Date.now() - searchStarted;
-      trackUser('search results processed', { numberOfSearchResults: searchResults.length, millisecondsSpent: millisecondsSpentSearching});
+      trackUser('user interaction', 'search results processed', 'millisecondsSpent', millisecondsSpentSearching);
+      trackUser('user interaction', 'search results processed', 'numberOfResults', searchResults.length);
     }
   });
 }
@@ -400,12 +401,24 @@ function setTooltip(searchResult, element, backgroundColor, textColor) {
   element.on("mouseout", function (e) {
     tooltip.style.display = "none";
     var millisecondsSpentHovering = Date.now() - startHoverTimestamp;
-    trackUser('end hover on search result', { q: searchResult.q, millisecondsSpentHovering: millisecondsSpentHovering });
+    trackUser( 'user interaction','search result end hover', searchResult.q, millisecondsSpentHovering);
     startHoverTimestamp = null;
   });
 }
 
-function trackUser(eventName, metadata) {
-  console.log('[trackUser] ' + eventName + ': ' + JSON.stringify(metadata))
+/**
+ *
+ * @param category Mandatory. This describes the type of events you want to track. For example, Link Clicks, Videos, Outbound Links, and Form Events.
+ * @param action Mandatory. This is the specific action that is taken. For example, with the Video category, you might have a Play, Pause and Complete action.
+ * @param name Optional, recommended. This is usually the title of the element that is being interacted with, to aid with analysis. For example, it could be the name of a Video that was played or the specific form that is being submitted.
+ * @param value Optional. This is a numeric value and is often added dynamically. It could be the cost of a product that is added to a cart, or the completion percentage of a video.
+ */
+function trackUser(category, action, name, value) {
+  console.log('[trackUser] ' +  JSON.stringify({
+    category: category,
+    action: action,
+    name: name,
+    value: value
+  }));
 }
 
