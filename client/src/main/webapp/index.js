@@ -251,7 +251,7 @@ function search() {
                     var millisecondsOpened = Date.now() - timestampOpened;
                     trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
                   });
-              trackUser('user interaction', 'search result popup opened', searchResult.q);
+              trackUser('user interaction', 'search result popup opened', searchResult.q, searchResult.images.length);
             })
             .addTo(searchResultLayer);
           setTooltip(searchResult, polygon);
@@ -274,7 +274,7 @@ function search() {
                       var millisecondsOpened = Date.now() - timestampOpened;
                       trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
                     });
-                trackUser('user interaction', 'search result popup opened', searchResult.q);
+                trackUser('user interaction', 'search result popup opened', searchResult.q, searchResult.images.length);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -307,7 +307,7 @@ function search() {
                     var millisecondsOpened = Date.now() - timestampOpened;
                     trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
                   });
-                trackUser('user interaction', 'search result popup opened', searchResult.q);
+                trackUser('user interaction', 'search result popup opened', searchResult.q, searchResult.images.length);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
