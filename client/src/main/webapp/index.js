@@ -9,7 +9,7 @@ var mappos;
 $(function () {
 
   mappos = L.Permalink.getMapLocation(0, [0, 0]);
-  var moveToGeolocation = mappos.center[0] === 0 && mappos.center[1] === 0;
+  var hasPermalinkMapLocation = mappos.center[0] !== 0 && mappos.center[1] !== 0;
   if (mappos.center[0] === 0 && mappos.center[1] === 0 && mappos.zoom === 0) {
     mappos = {zoom: 5, center: [60.128162, 18.643501]};
   }
@@ -18,30 +18,32 @@ $(function () {
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      geolocation = position;
-
-      if (moveToGeolocation) {
-        map.setView([geolocation.coords.latitude, geolocation.coords.longitude], 12);
+      var positionLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
+      if (hasPermalinkMapLocation) {
+        var swedenEnvelope = L.latLngBounds(
+            L.latLng(55.3617373725, 11.0273686052),
+            L.latLng(69.1062472602, 23.9033785336)
+        );
+        if (swedenEnvelope.contains(positionLatLng)) {
+          map.setView(positionLatLng, 12);
+        }
       }
-
       L.marker(L.latLng(geolocation.coords.latitude, geolocation.coords.longitude), {
         icon: L.VectorMarkers.icon({
           icon: "street-view",
           markerColor: 'green'
         })
       }).addTo(geolocationLayer);
-
       search();
-
     }, function (err) {
-
       search();
-
     }, {
       enableHighAccuracy: true,
       timeout: 5000,
       maximumAge: 0
     });
+  } else {
+    search();
   }
 });
 
@@ -63,9 +65,9 @@ function initializeMap() {
   map.getPane('labels').style.zIndex = 400;
 
   var attribution = '<a href="https://www.openstreetmap.org">OSM</a>';
-  // var base = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
-  var base = new L.TileLayer('https://free.tile.hydda.se/hydda/v2/base/{z}/{x}/{y}.png', {
+  var base = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // var base = new L.TileLayer('https://maps.keb.kodapan.se/tiles/hydda/v2/base/{z}/{x}/{y}.png', {
     subdomains: "abc",
     attribution: attribution,
     maxZoom: 20,
@@ -73,13 +75,13 @@ function initializeMap() {
     pane: "base"
   });
 
-  var labels = new L.TileLayer('https://free.tile.hydda.se/hydda/v2/places/{z}/{x}/{y}.png', {
-    subdomains: "abc",
-    attribution: attribution,
-    maxZoom: 20,
-    maxNativeZoom: 19,
-    pane: "labels"
-  });
+  // var labels = new L.TileLayer('https://maps.keb.kodapan.se/tiles/hydda/v2/places_roads_and_labels/int/{z}/{x}/{y}.png', {
+  //   subdomains: "abc",
+  //   attribution: attribution,
+  //   maxZoom: 20,
+  //   maxNativeZoom: 19,
+  //   pane: "labels"
+  // });
 
   searchResultLayer = L.layerGroup([], {
     pane: "searchResults"
@@ -92,7 +94,7 @@ function initializeMap() {
   map.addLayer(base);
   map.addLayer(geolocationLayer);
   map.addLayer(searchResultLayer);
-  map.addLayer(labels);
+  // map.addLayer(labels);
 
 
   /** this is to handle a bug that occurs sometimes when clicking on an icon one happens to move the map really quick instead. */
@@ -141,6 +143,7 @@ function delayedSearch(millisecondsDelay) {
   }, millisecondsDelay);
 }
 
+// this needs to match the data in NaturvardsregistretGeometryManager
 var distanceToleranceByZoom = {
   6: 0.1,
   7: 0.1,
