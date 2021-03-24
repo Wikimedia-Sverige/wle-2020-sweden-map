@@ -235,8 +235,6 @@ function search() {
           popupHtml += "<br/>Saknar bilder";
         }
 
-        var tooltipHtml = searchResult.label;
-
         if (searchResult.feature.geometry.type === 'MultiPolygon'
           || searchResult.feature.geometry.type === 'Polygon') {
 
@@ -249,7 +247,7 @@ function search() {
               trackUser('clicked on search result', searchResult);
             })
             .addTo(searchResultLayer);
-          setTooltip(polygon, tooltipHtml);
+          setTooltip(searchResult, polygon);
 
           if (map.getZoom() >= 12) {
             var marker = L.marker(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]), {
@@ -266,7 +264,7 @@ function search() {
                 trackUser('clicked on search result', searchResult);
               })
               .addTo(searchResultLayer);
-            setTooltip(marker, tooltipHtml);
+            setTooltip(searchResult, marker);
           }
 
         } else if (searchResult.feature.geometry.type === 'MultiPoint'
@@ -293,7 +291,7 @@ function search() {
                 trackUser('clicked on search result', searchResult);
               })
               .addTo(searchResultLayer);
-            setTooltip(marker, tooltipHtml);
+            setTooltip(searchResult, marker);
 
           }
 
@@ -318,7 +316,7 @@ function search() {
 }
 
 
-function setTooltip(element, html, backgroundColor, textColor) {
+function setTooltip(searchResult, element, backgroundColor, textColor) {
   if (element === null) {
     console.log("Avoid adding tooltip to non existing elements!");
     return;
@@ -335,7 +333,7 @@ function setTooltip(element, html, backgroundColor, textColor) {
   var tooltip = document.getElementById("tooltip");
   element.on("mousemove", function (mouseEvent) {
 
-    tooltip.innerHTML = html;
+    tooltip.innerHTML = searchResult.label;
     tooltip.style.top = "0px";
     tooltip.style.left = "0px";
     tooltip.style.display = "block";
