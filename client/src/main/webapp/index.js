@@ -220,8 +220,8 @@ function search() {
           radius: 250
         };
 
-        var popupHtml = "<a href='https://www.wikidata.org/wiki/"+  searchResult.q +"' target='_blank'>" + searchResult.label + "</a>";
-        popupHtml += "<br/><a href='" + uploadUrl + "' target='_blank'>Ladda upp bild</a>";
+        var popupHtml = "<a href='https://www.wikidata.org/wiki/"+  searchResult.q +"' target='_blank' onclick='trackWikidataLinkClick(\""+searchResult.q+"\");'>" + searchResult.label + "</a>";
+        popupHtml += "<br/><a href='" + uploadUrl + "' target='_blank' onclick='trackUploadLinkClick(\""+searchResult.q+"\");'>Ladda upp bild</a>";
         if (searchResult.images.length > 0) {
           popupHtml += "<div class='popup-images'>";
           // popupHtml += "Har "+ searchResult.images.length+" bild";
@@ -416,6 +416,12 @@ function setTooltip(searchResult, element, backgroundColor, textColor) {
 
 function trackImageClick(q, filename) {
   trackUser('user interaction', 'search result click image', q, filename);
+}
+function trackWikidataLinkClick(q, filename) {
+  trackUser('user interaction', 'search result click wikidata link', q);
+}
+function trackUploadLinkClick(q, filename) {
+  trackUser('user interaction', 'search result click upload link', q);
 }
 
 /**
