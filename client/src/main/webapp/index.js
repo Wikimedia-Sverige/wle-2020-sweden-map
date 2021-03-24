@@ -28,7 +28,7 @@ $(function () {
           map.setView(positionLatLng, 12);
         }
       }
-      L.marker(L.latLng(geolocation.coords.latitude, geolocation.coords.longitude), {
+      L.marker(positionLatLng, {
         icon: L.VectorMarkers.icon({
           icon: "street-view",
           markerColor: 'green'
