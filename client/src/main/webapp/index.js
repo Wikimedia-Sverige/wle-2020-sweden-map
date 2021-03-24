@@ -241,11 +241,17 @@ function search() {
 
           var polygon = L.geoJSON(searchResult.feature.geometry, {style: polyStyle})
             .on("click", function(e){
+              var timestampOpened = Date.now();
               L.popup()
                 .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                 .setContent(popupHtml)
                 .openOn(map);
-              trackUser('user interaction', 'search result opened popup', searchResult.q);
+              map
+                  .once('popupclose', function (popup){
+                    var millisecondsOpened = Date.now() - timestampOpened;
+                    trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
+                  });
+              trackUser('user interaction', 'search result popup opened', searchResult.q);
             })
             .addTo(searchResultLayer);
           setTooltip(searchResult, polygon);
@@ -258,11 +264,17 @@ function search() {
               })
             })
               .on("click", function(e){
+                var timestampOpened = Date.now();
                 L.popup()
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                trackUser('user interaction', 'search result opened popup', searchResult.q);
+                map
+                    .once('popupclose', function (popup){
+                      var millisecondsOpened = Date.now() - timestampOpened;
+                      trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
+                    });
+                trackUser('user interaction', 'search result popup opened', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
