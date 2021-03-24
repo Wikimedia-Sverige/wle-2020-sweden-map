@@ -286,15 +286,16 @@ function search() {
             marker
               .on("click", function(e){
                 var timestampOpened = Date.now();
-                L.popup()
+                var popup = L.popup()
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
-                  .openOn(map)
+                  .openOn(map);
+                popup
                   .once('popupclose', function (){
                     var millisecondsOpened = Date.now() - timestampOpened;
                     trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
                   });
-                trackUser('user interaction', 'search result popup closed', searchResult.q);
+                trackUser('user interaction', 'search result popup opened', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
