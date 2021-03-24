@@ -23,6 +23,7 @@ public class NaturvardsregistretMapModule extends AbstractServiceModule {
     initializables.add(WikimediaCommons.class);
     initializables.add(NaturvardsregistretIndex.class);
     initializables.add(NaturvardsregistretDataManager.class);
+    initializables.add(NaturvardsregistretGeometryManager.class);
 
     return initializables;
   }

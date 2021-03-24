@@ -133,6 +133,9 @@ public class Service {
     long millisecondsSpent = ended - started;
     log.info(millisecondsSpent + " milliseconds spent opening all initializables.");
 
+    long bytesRamUsed = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+    long mbRamUsed = bytesRamUsed / 1024 / 1024;
+    log.info(mbRamUsed + " MB RAM in use.");
 
     return true;
   }

@@ -8,6 +8,8 @@ import lombok.Data;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 import org.prevayler.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 import se.wikimedia.service.template.Initializable;
@@ -20,6 +22,8 @@ import java.util.*;
 @Singleton
 public class NaturvardsregistretGeometryManager implements Initializable {
 
+  private Logger log = LoggerFactory.getLogger(getClass());
+
   @Inject
   private ObjectMapper objectMapper;
 
@@ -30,17 +34,40 @@ public class NaturvardsregistretGeometryManager implements Initializable {
   public boolean open() throws Exception {
 
     // pre calculate all geometries
-    // todo and simplified geometries
+    // and simplified geometries
+
+    // this needs to match the data in index.js
+    double[] distanceTolerances = new double[]{
+      0.1,
+      0.05,
+      0.025,
+      0.005,
+      0.002,
+      0.001,
+      0.0005,
+      0.0001
+    };
+
     for (NaturvardsregistretObject object : prevayler.execute(new Query<Root, Collection<NaturvardsregistretObject>>() {
       @Override
       public Collection<NaturvardsregistretObject> query(Root root, Date date) throws Exception {
         return new HashSet<>(root.getNaturvardsregistretObjects().values());
       }
     })) {
-      getJtsGeometry(object);
-      getGeoJsonGeometry(object);
-      getGeoJsonFeatureCentroid(object);
+      if (object.getFeatureGeometry() != null) {
+        getJtsGeometry(object);
+        getGeoJsonGeometry(object);
+        getGeoJsonFeatureCentroid(object);
+        for (double distanceTolerance : distanceTolerances) {
+          getSimplifiedGeoJsonGeometry(object, distanceTolerance);
+        }
+      } else {
+        log.warn("{} is missing feature geometry", object.getWikidataQ());
+      }
     }
+
+    log.info("{} jts geometries, {} geojson geometries, {} simplified geometries", jtsGeometries.size(), geoJsonGeometries.size(), simplifiedGeometries.size());
+
     return true;
   }
 
