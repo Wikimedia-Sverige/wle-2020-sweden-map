@@ -229,7 +229,7 @@ function search() {
           //   popupHtml += "er";
           // }
           searchResult.images.forEach(function (image){
-            popupHtml += "<br/><a href='https://commons.wikimedia.org/wiki/File:"+image.filename+"' target='_blank'><img src='"+image.url+"' width='"+image.width/2+"' height='"+image.height/2+"' onclick='trackImageClick(\'"+searchResult.q+"\', \'"+image.filename+"\')'></a>";
+            popupHtml += "<br/><a href='https://commons.wikimedia.org/wiki/File:"+image.filename+"' target='_blank'><img src='"+image.url+"' width='"+image.width/2+"' height='"+image.height/2+"' onclick='trackImageClick(\""+searchResult.q+"\", \""+image.filename+"\")'></a>";
           });
           popupHtml += "</div>"
         } else {
