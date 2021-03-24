@@ -310,7 +310,7 @@ function search() {
 
       });
 
-      trackUser('search results processed', searchResults);
+      trackUser('search results processed', searchResults.length);
     }
   });
 }
