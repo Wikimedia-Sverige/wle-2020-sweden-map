@@ -39,7 +39,7 @@ $(function () {
       L.marker(positionLatLng, {
         icon: L.VectorMarkers.icon({
           icon: "street-view",
-          markerColor: 'green'
+          markerColor: 'pink'
         })
       }).addTo(geolocationLayer);
       search();
