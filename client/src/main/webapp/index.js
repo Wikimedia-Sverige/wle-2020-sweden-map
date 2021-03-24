@@ -172,6 +172,7 @@ var distanceToleranceByZoom = {
 
 
 function search() {
+  var searchStarted = Date.now();
   if (map.getZoom() < 8) {
     searchResultLayer.clearLayers();
     $("#zoomMore").show();
@@ -310,7 +311,8 @@ function search() {
 
       });
 
-      trackUser('search results processed', searchResults.length);
+      var millisecondsSpentSearching = Date.now() - searchStarted;
+      trackUser('search results processed', { numberOfSearchResults: searchResults.length, millisecondsSpent: millisecondsSpentSearching});
     }
   });
 }
