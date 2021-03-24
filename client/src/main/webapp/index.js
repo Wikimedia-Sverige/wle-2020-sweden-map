@@ -19,7 +19,7 @@ $(function () {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
       var positionLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
-      if (hasPermalinkMapLocation) {
+      if (!hasPermalinkMapLocation) {
         var swedenEnvelope = L.latLngBounds(
             L.latLng(55.3617373725, 11.0273686052),
             L.latLng(69.1062472602, 23.9033785336)
