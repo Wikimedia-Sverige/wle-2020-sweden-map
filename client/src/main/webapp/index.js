@@ -8,10 +8,15 @@ var mappos;
 
 $(function () {
 
+  trackUser('entered page');
+
   mappos = L.Permalink.getMapLocation(0, [0, 0]);
   var hasPermalinkMapLocation = mappos.center[0] !== 0 && mappos.center[1] !== 0;
   if (mappos.center[0] === 0 && mappos.center[1] === 0 && mappos.zoom === 0) {
     mappos = {zoom: 5, center: [60.128162, 18.643501]};
+    trackUser('no permalink location');
+  } else {
+    trackUser('used permalink location', mappos);
   }
   initializeMap();
   L.Permalink.setup(map);
@@ -26,6 +31,9 @@ $(function () {
         );
         if (swedenEnvelope.contains(positionLatLng)) {
           map.setView(positionLatLng, 12);
+          trackUser('located in sweden', positionLatLng);
+        } else {
+          trackUser('not located in sweden', positionLatLng);
         }
       }
       L.marker(positionLatLng, {
@@ -238,6 +246,7 @@ function search() {
                 .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                 .setContent(popupHtml)
                 .openOn(map);
+              trackUser('clicked on search result', searchResult);
             })
             .addTo(searchResultLayer);
           setTooltip(polygon, tooltipHtml);
@@ -254,6 +263,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
+                trackUser('clicked on search result', searchResult);
               })
               .addTo(searchResultLayer);
             setTooltip(marker, tooltipHtml);
@@ -280,6 +290,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
+                trackUser('clicked on search result', searchResult);
               })
               .addTo(searchResultLayer);
             setTooltip(marker, tooltipHtml);
@@ -300,6 +311,8 @@ function search() {
         }
 
       });
+
+      trackUser('search results processed', searchResults);
     }
   });
 }
@@ -382,5 +395,11 @@ function setTooltip(element, html, backgroundColor, textColor) {
   });
   element.on("mouseout", function (e) {
     tooltip.style.display = "none";
+    trackUser('end hover on search result', searchResult);
   });
 }
+
+function trackUser(eventName, metadata) {
+  console.log('[trackUser] ' + eventName + ': ' + JSON.stringify(metadata))
+}
+
