@@ -244,7 +244,7 @@ function search() {
                 .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                 .setContent(popupHtml)
                 .openOn(map);
-              trackUser('clicked on search result', searchResult);
+              trackUser('clicked on search result', searchResult.q);
             })
             .addTo(searchResultLayer);
           setTooltip(searchResult, polygon);
@@ -261,7 +261,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                trackUser('clicked on search result', searchResult);
+                trackUser('clicked on search result', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -288,7 +288,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                trackUser('clicked on search result', searchResult);
+                trackUser('clicked on search result', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -315,7 +315,7 @@ function search() {
   });
 }
 
-
+var startHoverTimestamp = null;
 function setTooltip(searchResult, element, backgroundColor, textColor) {
   if (element === null) {
     console.log("Avoid adding tooltip to non existing elements!");
@@ -332,6 +332,10 @@ function setTooltip(searchResult, element, backgroundColor, textColor) {
   var mapDiv = document.getElementById("map");
   var tooltip = document.getElementById("tooltip");
   element.on("mousemove", function (mouseEvent) {
+
+    if (startHoverTimestamp === null) {
+      startHoverTimestamp = Date.now();
+    }
 
     tooltip.innerHTML = searchResult.label;
     tooltip.style.top = "0px";
@@ -393,7 +397,9 @@ function setTooltip(searchResult, element, backgroundColor, textColor) {
   });
   element.on("mouseout", function (e) {
     tooltip.style.display = "none";
-    trackUser('end hover on search result', searchResult);
+    var millisecondsSpentHovering = Date.now() - startHoverTimestamp;
+    trackUser('end hover on search result', { q: searchResult.q, millisecondsSpentHovering: millisecondsSpentHovering });
+    startHoverTimestamp = null;
   });
 }
 
