@@ -245,7 +245,7 @@ function search() {
                 .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                 .setContent(popupHtml)
                 .openOn(map);
-              trackUser('user interaction', 'search result clicked', searchResult.q);
+              trackUser('user interaction', 'search result opened popup', searchResult.q);
             })
             .addTo(searchResultLayer);
           setTooltip(searchResult, polygon);
@@ -262,7 +262,7 @@ function search() {
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
                   .openOn(map);
-                trackUser('user interaction', 'search result clicked', searchResult.q);
+                trackUser('user interaction', 'search result opened popup', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -285,11 +285,16 @@ function search() {
             }
             marker
               .on("click", function(e){
+                var timestampOpened = Date.now();
                 L.popup()
                   .setLatLng(L.latLng(searchResult.centroid.coordinates[1], searchResult.centroid.coordinates[0]))
                   .setContent(popupHtml)
-                  .openOn(map);
-                trackUser('user interaction', 'search result clicked', searchResult.q);
+                  .openOn(map)
+                  .on('remove', function(){
+                    var millisecondsOpened = Date.now() - timestampOpened;
+                    trackUser('user interaction', 'search result popup closed', searchResult.q, millisecondsOpened);
+                  });
+                trackUser('user interaction', 'search result popup closed', searchResult.q);
               })
               .addTo(searchResultLayer);
             setTooltip(searchResult, marker);
@@ -338,6 +343,7 @@ function setTooltip(searchResult, element, backgroundColor, textColor) {
 
     if (startHoverTimestamp === null) {
       startHoverTimestamp = Date.now();
+      trackUser( 'user interaction','search result begin hover', searchResult.q);
     }
 
     tooltip.innerHTML = searchResult.label;
