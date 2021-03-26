@@ -24,6 +24,32 @@
   <script src="index.js" type="text/javascript"></script>
   <link rel="stylesheet" href="index.css" type="text/css"/>
 
+  <link rel="stylesheet" type="text/css" href="lib/cookieconsent-1.0.2/cookieconsent.min.css"/>
+  <script src="lib/cookieconsent-1.0.2/cookieconsent.min.js" defer></script>
+  <script>
+    window.addEventListener("load", function(){
+        window.wpcc.init({
+            "colors":{
+                "popup":{
+                    "background":"#1a3242","text":"#ffffff","border":"#b3d0e4"
+                },
+                "button":{
+                    "background":"#b3d0e4","text":"#000000"
+                }
+            },
+            "transparency":"15","padding":"small","corners":"small","margin":"small","content":{
+                "href":"https://map.wikilovesearth.se/cookienotice.html",
+                "message":"Vi använder kakor på webbplatsen. Du kan läsa om detta i vår integritetspolicy. Om du fortsätter att använda webbplatsen accepterar du att vi använder kakor.",
+                "button":"Okej",
+                "link":"Mer om våra kakor"
+            },
+            "position":"bottom"
+        })
+    });
+  </script>
+
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
   <!-- Matomo -->
@@ -48,6 +74,7 @@
   <div id="map"></div>
   <div id="tooltip"></div>
   <div id="zoomMore">Zooma in i kartan för resultat</div>
+
 </body>
 
 </html>
