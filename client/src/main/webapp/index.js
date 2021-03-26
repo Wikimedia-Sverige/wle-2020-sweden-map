@@ -72,7 +72,7 @@ function initializeMap() {
   map.getPane('searchResults').style.zIndex = 300;
   map.getPane('labels').style.zIndex = 400;
 
-  var attribution = '<a href="https://www.openstreetmap.org">OSM</a>';
+  var attribution = 'Ett projekt från <a href="https://wikimedia.se/">Wikimedia Sverige</a> | Kartdata från <a href="https://www.openstreetmap.org">OSM</a>';
 
   // var base = new L.TileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
   var base = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -452,4 +452,3 @@ function trackUser(category, action, name, value) {
     value: value
   }));
 }
-
