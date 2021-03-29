@@ -451,6 +451,5 @@ function trackUser(category, action, name, value) {
     name: name,
     value: value
   }));
-  category = 'test_'+category;
   _paq.push(['trackEvent', category, action, name, value]);
 }
