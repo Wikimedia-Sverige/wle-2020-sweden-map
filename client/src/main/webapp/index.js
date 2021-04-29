@@ -72,7 +72,7 @@ function initializeMap() {
   map.getPane('searchResults').style.zIndex = 300;
   map.getPane('labels').style.zIndex = 400;
 
-  var attribution = '<a href="https://www.openstreetmap.org">OSM</a> | <a href="https://wikimedia.se/">WMSE</a> | <a href="https://wikilovesearth.se">Wiki Loves Earth 2021</a>';
+  var attribution = '<a href="https://www.openstreetmap.org">OSM</a> | <a href="https://wikimedia.se/">WMSE</a> | Läs mer om <a href="https://wikilovesearth.se">Wiki Loves Earth</a>';
 
   // var base = new L.TileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
   var base = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
