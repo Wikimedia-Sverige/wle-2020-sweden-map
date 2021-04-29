@@ -46,5 +46,9 @@ html, body, div, span, textarea, button, input, table, tr, td {
 .popup-images {
     overflow-y:scroll;
     max-height: 240px;
+}
 
+.leaflet-container .leaflet-control-attribution,
+.leaflet-container .leaflet-control-scale {
+    font-size: 1vw;
 }
