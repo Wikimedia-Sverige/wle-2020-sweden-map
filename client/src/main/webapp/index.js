@@ -200,7 +200,13 @@ function search() {
       searchResultLayer.clearLayers();
       searchResults.forEach(function (searchResult) {
 
-        var uploadUrl = "https://commons.wikimedia.org/wiki/special:uploadWizard?campaign=wle-se&id=" + searchResult.nvrid + "&descriptionlang=sv&description=";
+        var uploadUrl;
+
+        if ("biosphere reserve" === searchResult.stereotype) {
+          uploadUrl = "https://commons.wikimedia.org/wiki/special:uploadWizard?campaign=wle-se-unesco&id=" + searchResult.q + "&descriptionlang=sv&description=";
+        } else {
+          uploadUrl = "https://commons.wikimedia.org/wiki/special:uploadWizard?campaign=wle-se&id=" + searchResult.nvrid + "&descriptionlang=sv&description=";
+        }
 
         var markerColor = searchResult.images.length ===  0? '#0000FF' : 'green';
 
