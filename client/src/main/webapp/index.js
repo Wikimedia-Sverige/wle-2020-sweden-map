@@ -151,12 +151,6 @@ function delayedSearch(millisecondsDelay) {
   delayedSearchTimeout = window.setTimeout(function () {
     search();
   }, millisecondsDelay);
-  if (legendTimeout === null) {
-    $("#legend").show();
-    legendTimeout = window.setTimeout(function() {
-      $("#legend").hide();
-    }, 10000);
-  }
 }
 
 // this needs to match the data in NaturvardsregistretGeometryManager
@@ -181,6 +175,14 @@ var distanceToleranceByZoom = {
 
 function search() {
   var searchStarted = Date.now();
+
+  if (legendTimeout === null) {
+    $("#legend").show();
+    legendTimeout = window.setTimeout(function() {
+      $("#legend").hide();
+    }, 10000);
+  }
+
   if (map.getZoom() < 8) {
     searchResultLayer.clearLayers();
     $("#zoomMore").show();
