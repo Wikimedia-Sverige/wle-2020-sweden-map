@@ -142,6 +142,7 @@ function initializeMap() {
 }
 
 var delayedSearchTimeout = null;
+var legendTimeout = null;
 
 function delayedSearch(millisecondsDelay) {
   if (delayedSearchTimeout) {
@@ -150,6 +151,12 @@ function delayedSearch(millisecondsDelay) {
   delayedSearchTimeout = window.setTimeout(function () {
     search();
   }, millisecondsDelay);
+  if (legendTimeout === null) {
+    $("#legend").show();
+    legendTimeout = window.setTimeout(function() {
+      $("#legend").hide();
+    }, 10000);
+  }
 }
 
 // this needs to match the data in NaturvardsregistretGeometryManager

@@ -50,7 +50,7 @@ html, body, div, span, textarea, button, input, table, tr, td {
 
 #legend {
     position: absolute;
-    display: block;
+    display: none;
     z-index: 5001;
     border: solid 2px white;
     left: 10px;
