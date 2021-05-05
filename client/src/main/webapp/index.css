@@ -23,9 +23,9 @@ html, body, div, span, textarea, button, input, table, tr, td {
     color: #FFFFFF;
     padding: 0.25em 0.75em 0.25em 0.75em;
     border: solid 2px #FFFFFF;
-    border-radius: 20px/60px;
-    -webkit-box-shadow: 10px 10px 20px #000000;
-    box-shadow: 10px 10px 20px #000000;
+    /*border-radius: 20px/60px;*/
+    /*-webkit-box-shadow: 10px 10px 20px #000000;*/
+    /*box-shadow: 10px 10px 20px #000000;*/
 }
 
 #zoomMore {
@@ -36,9 +36,9 @@ html, body, div, span, textarea, button, input, table, tr, td {
     color: #FFFFFF;
     padding: 0.25em 0.75em 0.25em 0.75em;
     border: solid 2px #FFFFFF;
-    border-radius: 20px/60px;
-    -webkit-box-shadow: 10px 10px 20px #000000;
-    box-shadow: 10px 10px 20px #000000;
+    /*border-radius: 20px/60px;*/
+    /*-webkit-box-shadow: 10px 10px 20px #000000;*/
+    /*box-shadow: 10px 10px 20px #000000;*/
     right: 10px;
 
 }
@@ -48,6 +48,23 @@ html, body, div, span, textarea, button, input, table, tr, td {
     max-height: 240px;
 }
 
+#legend {
+    position: absolute;
+    display: block;
+    z-index: 5001;
+    border: solid 2px white;
+    left: 10px;
+    bottom: 10px;
+    color: white;
+}
+.has-images {
+    padding: 0.25em 0.75em 0.25em 0.75em;
+    background-color: green;
+}
+.has-no-images {
+    padding: 0.25em 0.75em 0.25em 0.75em;
+    background-color: #0000FF;
+}
 
 @media screen and (max-width: 800px) {
     .leaflet-container .leaflet-control-attribution,
