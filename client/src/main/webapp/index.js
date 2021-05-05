@@ -175,14 +175,6 @@ var distanceToleranceByZoom = {
 
 function search() {
   var searchStarted = Date.now();
-
-  if (legendTimeout === null) {
-    $("#legend").show();
-    legendTimeout = window.setTimeout(function() {
-      $("#legend").hide();
-    }, 10000);
-  }
-
   if (map.getZoom() < 8) {
     searchResultLayer.clearLayers();
     $("#zoomMore").show();
@@ -205,6 +197,15 @@ function search() {
       distanceTolerance: distanceToleranceByZoom[map.getZoom()],
     }),
     success: function (searchResults) {
+
+      if (searchResults.length > 0) {
+        if (legendTimeout === null) {
+          $("#legend").show();
+          legendTimeout = window.setTimeout(function() {
+            $("#legend").hide();
+          }, 10000);
+        }
+      }
 
       searchResultLayer.clearLayers();
       searchResults.forEach(function (searchResult) {
