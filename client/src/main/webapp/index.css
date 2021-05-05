@@ -54,7 +54,7 @@ html, body, div, span, textarea, button, input, table, tr, td {
     z-index: 5001;
     border: solid 2px white;
     left: 10px;
-    bottom: 10px;
+    top: 10px;
     color: white;
 }
 .has-images {
