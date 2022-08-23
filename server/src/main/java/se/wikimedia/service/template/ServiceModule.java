@@ -32,7 +32,7 @@ public class ServiceModule extends AbstractServiceModule {
 
   public static final String SERVICE_NAME = "service name";
   public static final String SERVICE_DATA_PATH = "service data path";
-  public static final String SERVICE_DATA_PATH_PREFIX_ENV = "service-data-path-prefix";
+  public static final String SERVICE_DATA_PATH_PREFIX_ENV = "SERVICE_DATA_PATH_PREFIX_ENV";
 
   public ServiceModule(String serviceName) {
     super(serviceName);
