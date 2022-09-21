@@ -2,6 +2,9 @@ package se.wikimedia.service.wle2020.naturvardsregistret.map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.Data;
@@ -76,26 +79,32 @@ public class NaturvardsregistretGeometryManager implements Initializable {
     return true;
   }
 
-  private Map<UUID, Geometry> jtsGeometries = new HashMap<>(10000);
+  private final LoadingCache<NaturvardsregistretObject, Geometry> jtsGeometries = CacheBuilder
+          .newBuilder()
+          .maximumSize(100)
+          .build(new CacheLoader<NaturvardsregistretObject, Geometry>() {
+    @Override
+    public Geometry load(NaturvardsregistretObject object) {
+      return new GeoJSONReader().read(object.getFeatureGeometry());
+    }
+  });
 
   public Geometry getJtsGeometry(NaturvardsregistretObject object) throws Exception {
-    Geometry geometry = jtsGeometries.get(object.getIdentity());
-    if (geometry == null) {
-      geometry = new GeoJSONReader().read(object.getFeatureGeometry());
-      jtsGeometries.put(object.getIdentity(), geometry);
-    }
-    return geometry;
+    return jtsGeometries.get(object);
   }
 
-  private Map<UUID, org.wololo.geojson.Geometry> geoJsonGeometries = new HashMap<>(10000);
+  private LoadingCache<NaturvardsregistretObject, org.wololo.geojson.Geometry> geoJsonGeometries = CacheBuilder
+          .newBuilder()
+          .maximumSize(100)
+          .build(new CacheLoader<NaturvardsregistretObject, org.wololo.geojson.Geometry>() {
+    @Override
+    public org.wololo.geojson.Geometry load(NaturvardsregistretObject object) throws Exception {
+      return objectMapper.readValue(object.getFeatureGeometry(), org.wololo.geojson.Geometry.class);
+    }
+  });
 
   public org.wololo.geojson.Geometry getGeoJsonGeometry(NaturvardsregistretObject object) throws Exception {
-    org.wololo.geojson.Geometry geometry = geoJsonGeometries.get(object.getIdentity());
-    if (geometry == null) {
-      geometry = objectMapper.readValue(object.getFeatureGeometry(), org.wololo.geojson.Geometry.class);
-      geoJsonGeometries.put(object.getIdentity(), geometry);
-    }
-    return geometry;
+    return geoJsonGeometries.get(object);
   }
 
   private Map<UUID, org.wololo.geojson.Point> geoJsonCentroids = new HashMap<>(10000);
@@ -111,11 +120,11 @@ public class NaturvardsregistretGeometryManager implements Initializable {
 
   @Data
   private static class SimplifiedGeoJsonGeometryKey {
-    private UUID identity;
+    private NaturvardsregistretObject object;
     private double distanceTolerance;
 
-    public SimplifiedGeoJsonGeometryKey(UUID identity, double distanceTolerance) {
-      this.identity = identity;
+    public SimplifiedGeoJsonGeometryKey(NaturvardsregistretObject object, double distanceTolerance) {
+      this.object = object;
       this.distanceTolerance = distanceTolerance;
     }
   }
@@ -123,7 +132,33 @@ public class NaturvardsregistretGeometryManager implements Initializable {
   private GeometryFactory geometryFactory = new GeometryFactory();
   private GeoJSONWriter geoJSONWriter = new GeoJSONWriter();
 
-  private Map<SimplifiedGeoJsonGeometryKey, org.wololo.geojson.Geometry> simplifiedGeometries = new HashMap<>(10000);
+  private LoadingCache<SimplifiedGeoJsonGeometryKey, org.wololo.geojson.Geometry> simplifiedGeometries = CacheBuilder
+          .newBuilder()
+          .maximumSize(100)
+          .build(new CacheLoader<SimplifiedGeoJsonGeometryKey, org.wololo.geojson.Geometry>() {
+            @Override
+            public org.wololo.geojson.Geometry load(SimplifiedGeoJsonGeometryKey simplifiedGeoJsonGeometryKey) throws Exception {
+              Geometry jtsGeometry = getJtsGeometry(simplifiedGeoJsonGeometryKey.getObject());
+              if (jtsGeometry instanceof Polygon
+                      || jtsGeometry instanceof MultiPolygon) {
+                Geometry simplifiedJtsGeometry = TopologyPreservingSimplifier.simplify(jtsGeometry, simplifiedGeoJsonGeometryKey.getDistanceTolerance());
+                return geoJSONWriter.write(simplifiedJtsGeometry);
+
+              } else if (jtsGeometry instanceof MultiPoint) {
+                Coordinate[] coordinates = jtsGeometry.getCoordinates();
+                if (coordinates.length == 1) {
+                  return geoJSONWriter.write(geometryFactory.createPoint(coordinates[0]));
+                } else if (coordinates.length == 2) {
+                  return geoJSONWriter.write(jtsGeometry.getCentroid());
+                } else {
+                  Geometry convexHull = jtsGeometry.convexHull();
+                  Geometry simplifiedConvexHull = TopologyPreservingSimplifier.simplify(convexHull, simplifiedGeoJsonGeometryKey.getDistanceTolerance());
+                  return geoJSONWriter.write(simplifiedConvexHull);
+                }
+              }
+              return getGeoJsonGeometry(simplifiedGeoJsonGeometryKey.getObject());
+            }
+          });
 
   /**
    * @param object
@@ -132,31 +167,7 @@ public class NaturvardsregistretGeometryManager implements Initializable {
    * @throws Exception
    */
   public org.wololo.geojson.Geometry getSimplifiedGeoJsonGeometry(NaturvardsregistretObject object, double distanceTolerance) throws Exception {
-    SimplifiedGeoJsonGeometryKey key = new SimplifiedGeoJsonGeometryKey(object.getIdentity(), distanceTolerance);
-    org.wololo.geojson.Geometry simplifiedGeoJsonGeometry = simplifiedGeometries.get(key);
-    if (simplifiedGeoJsonGeometry == null) {
-      Geometry jtsGeometry = getJtsGeometry(object);
-      if (jtsGeometry instanceof Polygon
-          || jtsGeometry instanceof MultiPolygon) {
-        Geometry simplifiedJtsGeometry = TopologyPreservingSimplifier.simplify(jtsGeometry, distanceTolerance);
-        simplifiedGeoJsonGeometry = geoJSONWriter.write(simplifiedJtsGeometry);
-
-      } else if (jtsGeometry instanceof MultiPoint) {
-        Coordinate[] coordinates = jtsGeometry.getCoordinates();
-        if (coordinates.length == 1) {
-          simplifiedGeoJsonGeometry = geoJSONWriter.write(geometryFactory.createPoint(coordinates[0]));
-        } else if (coordinates.length == 2) {
-          simplifiedGeoJsonGeometry = geoJSONWriter.write(jtsGeometry.getCentroid());
-        } else {
-          Geometry convexHull = jtsGeometry.convexHull();
-          Geometry simplifiedConvexHull = TopologyPreservingSimplifier.simplify(convexHull, distanceTolerance);
-          simplifiedGeoJsonGeometry = geoJSONWriter.write(simplifiedConvexHull);
-        }
-      }
-
-      simplifiedGeometries.put(key, simplifiedGeoJsonGeometry);
-    }
-    return simplifiedGeoJsonGeometry;
+    return simplifiedGeometries.get(new SimplifiedGeoJsonGeometryKey(object, distanceTolerance));
   }
 
 }

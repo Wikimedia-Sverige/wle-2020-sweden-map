@@ -23,4 +23,5 @@ public class NaturvardsregistretMap extends Service {
   public List<Module> getModules() {
     return Collections.singletonList(new NaturvardsregistretMapModule(getServiceName()));
   }
+
 }

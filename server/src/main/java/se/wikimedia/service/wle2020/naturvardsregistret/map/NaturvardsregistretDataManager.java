@@ -21,6 +21,7 @@ import se.wikimedia.service.wle2020.naturvardsregistret.map.prevalence.queries.G
 import se.wikimedia.service.wle2020.naturvardsregistret.map.prevalence.queries.GetWikimediaImage;
 import se.wikimedia.service.wle2020.naturvardsregistret.map.prevalence.transactions.*;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,6 +65,18 @@ public class NaturvardsregistretDataManager implements Initializable {
   @Override
   public boolean open() throws Exception {
     index.reconstruct();
+
+    long numberOfJsonChars = prevayler.execute(new Query<Root, Long>() {
+      @Override
+      public Long query(Root root, Date executionTime) throws Exception {
+        long numberOfJsonChars = 0;
+        for (NaturvardsregistretObject object : root.getNaturvardsregistretObjects().values())
+          if (object.getFeatureGeometry() != null)
+            numberOfJsonChars += object.getFeatureGeometry().length();
+        return numberOfJsonChars;
+      }
+    });
+    log.info("{} JSON feature geometry characters in RAM", numberOfJsonChars);
 
     // make sure to update this number if you modify number of threads!
     stoppedSignal = new CountDownLatch(4);
