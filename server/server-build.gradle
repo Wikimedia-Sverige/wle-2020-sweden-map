@@ -4,7 +4,6 @@ dependencies {
 
   compile 'org.wololo:jts2geojson:0.14.1'
 
-
   compile 'org.wikidata.wdtk:wdtk-wikibaseapi:0.11.1'
   compile 'net.sourceforge:jwbf:4.0.1-SNAPSHOT'
 }

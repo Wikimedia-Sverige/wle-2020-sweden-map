@@ -29,7 +29,7 @@ public class NaturvardsregistretObject implements Serializable {
   private String stereotype;
 
   private String wikidataQ;
-  private Integer naturvardsregistretIdentity;
+  private String naturvardsregistretIdentity;
 
   private String wikidataLabel;
 

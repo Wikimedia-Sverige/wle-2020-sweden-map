@@ -1,7 +1,9 @@
 /* Template file, do not edit. Use parent-build.gradle */
 
 buildscript {
-  repositories { jcenter() }
+  repositories {
+    mavenCentral()
+  }
   dependencies {
     classpath 'se.transmode.gradle:gradle-docker:1.2'
   }
@@ -24,7 +26,7 @@ subprojects {
 
   repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
   }
 
   dependencies {

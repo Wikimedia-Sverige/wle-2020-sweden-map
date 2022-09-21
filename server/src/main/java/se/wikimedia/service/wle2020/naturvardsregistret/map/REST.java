@@ -51,7 +51,7 @@ public class REST {
   @Data
   public static class SearchResultDTO {
     private UUID identity;
-    private Integer nvrid;
+    private String nvrid;
     private String stereotype;
     private Feature feature;
     private Point centroid;
@@ -68,18 +68,19 @@ public class REST {
     private Integer height;
   }
 
-  private Comparator<SearchResultDTO> searchResultDTOComparator = new Comparator<SearchResultDTO>() {
+  private Comparator<SearchResultDTO> searchResultDTOComparator = new Comparator<>() {
 
-    private Map<String, Integer> order = Stream.of(new Object[][]{
+    private final Map<String, Integer> order = Stream.of(new Object[][]{
         {"biosphere reserve", 1},
         {"national park", 2},
         {"nature reserve", 3},
         {"natural monument", 4},
+        {null, 5}
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
 
     @Override
     public int compare(SearchResultDTO dto1, SearchResultDTO dto2) {
-      return Integer.compare(order.get(dto1.getStereotype()), order.get(dto2.getStereotype()));
+        return Integer.compare(order.get(dto1.getStereotype()), order.get(dto2.getStereotype()));
     }
   };
 

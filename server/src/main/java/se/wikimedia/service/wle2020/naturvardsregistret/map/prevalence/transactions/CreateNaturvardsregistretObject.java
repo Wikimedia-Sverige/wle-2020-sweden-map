@@ -18,13 +18,13 @@ public class CreateNaturvardsregistretObject implements TransactionWithQuery<Roo
   private UUID identity;
 
   private String wikidataQ;
-  private Integer naturvardsregistretIdentity;
+  private String naturvardsregistretIdentity;
   private LocalDateTime wikidataEntryUpdated;
 
   public CreateNaturvardsregistretObject() {
   }
 
-  public static CreateNaturvardsregistretObject factory(String wikidataQ, Integer naturvardsregistretIdentity, LocalDateTime wikidataEntryUpdated) {
+  public static CreateNaturvardsregistretObject factory(String wikidataQ, String naturvardsregistretIdentity, LocalDateTime wikidataEntryUpdated) {
     CreateNaturvardsregistretObject instance = new CreateNaturvardsregistretObject();
     instance.identity = UUID.randomUUID();
     instance.wikidataQ = wikidataQ;

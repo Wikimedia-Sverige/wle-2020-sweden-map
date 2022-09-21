@@ -1,3 +1,11 @@
+Depends on JWBF:
+
+```
+git clone git@github.com:eldur/jwbf.git
+cd jwbf
+mvn install -Dtest=false -DfailIfNoTests=false
+```
+
 Start API server on port 8080 by executing `./gradlew build run` from the root.
 
 Webapp available in `client/src/main/webapp`

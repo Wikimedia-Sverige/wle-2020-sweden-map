@@ -26,7 +26,7 @@ public class WikimediaCommons implements Initializable {
     HttpActionClient client = HttpActionClient.builder() //
         .withUrl("https://commons.wikimedia.org/w/") //
         .withUserAgent(userAgent, userAgentVersion, emailAddress) //
-        .withRequestsPerUnit(10, TimeUnit.MINUTES) //
+        .withRequestsPerUnit(60, TimeUnit.MINUTES) //
         .build();
 
     bot = new MediaWikiBot(client);

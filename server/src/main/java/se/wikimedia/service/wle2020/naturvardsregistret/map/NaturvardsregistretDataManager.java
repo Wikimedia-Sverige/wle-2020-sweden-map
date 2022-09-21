@@ -256,9 +256,9 @@ public class NaturvardsregistretDataManager implements Initializable {
       }
       ObjectNode binding = (ObjectNode) bindings.get(i);
       String q = binding.get("item").get("value").textValue().replaceFirst("^(.+)(Q\\d+)$", "$2");
-      Integer nvrid;
+      String nvrid;
       if (binding.has("nvrid")) {
-       nvrid = Integer.valueOf(binding.get("nvrid").get("value").textValue());
+       nvrid = binding.get("nvrid").get("value").textValue();
       } else {
         nvrid = null;
       }
