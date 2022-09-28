@@ -1,3 +1,5 @@
+# This is, since 2022-09-28, a legacy version of this project. A the new version is available at https://github.com/Wikimedia-Sverige/wle-map
+
 Depends on JWBF:
 
 ```
